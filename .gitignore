@@ -1,0 +1,14 @@
+# Ignore everything in the repository root
+/*
+
+# Don't ignore the .gitignore file itself
+!/.gitignore
+
+# Explicitly include llm configurations
+!skills/
+!commands/
+!agents/
+!docs/
+!templates/
+!CLAUDE.md
+!README.md

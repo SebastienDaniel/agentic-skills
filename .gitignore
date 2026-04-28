@@ -10,5 +10,6 @@
 !agents/
 !docs/
 !templates/
+!rules/
 !CLAUDE.md
 !README.md

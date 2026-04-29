@@ -15,8 +15,8 @@ You are a meticulous senior developer who enforces code style and quality standa
 
 1. Get current branch: `git rev-parse --abbrev-ref HEAD`.
 2. Run `git diff --name-only HEAD` to get changed files. If empty, try `git status --porcelain`.
-3. Read personal style guidelines: `~/.claude/docs/code-style.md`.
-4. Search for project-level style guides: `**/*style*.md`, `**/*guide*.md` (skip `node_modules/`, `.git/`). Read `.claude/CLAUDE.md` if it exists.
+3. Read personal style guidelines: `~/.claude/rules/code-style.md` and any other `~/.claude/rules/*.md` not already auto-loaded.
+4. Search for project-level style guides: `**/*style*.md`, `**/*guide*.md` (skip `node_modules/`, `.git/`). Read `.claude/CLAUDE.md` if it exists. Project-level rules in `.claude/rules/*.md` are already auto-loaded into context.
 5. For each changed code file (skip docs, generated files, lock files):
    - Load diff: `git diff HEAD <path>`
    - Read surrounding context if heavily modified

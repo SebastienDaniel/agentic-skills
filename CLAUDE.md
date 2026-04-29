@@ -31,12 +31,12 @@ This environment uses a spec-driven agentic workflow. See `~/.claude/README.md` 
 
 ---
 
-# Code style
-
-Read and apply `~/.claude/docs/code-style.md`.
-
----
-
 # Introspection
 
 Read and follow all guidelines in `~/.claude/INTROSPECTION.md` and `.claude/INTROSPECTION.md` when they exist.
+
+---
+
+# Rules
+
+All `.md` files in `~/.claude/rules/` and `.claude/rules/` are auto-loaded into every session by Claude Code (v2.0.64+). They are first-class context — no explicit reference needed. Use `paths:` frontmatter to scope a rule to specific file patterns; otherwise it loads globally.

@@ -37,6 +37,7 @@ This split keeps regenerated artifacts out of the same directory as your durable
 | Path | Owner | Purpose |
 |---|---|---|
 | `.claude/CLAUDE.md` | hand-edited / scaffolded | Hard rules and guardrails |
+| `.claude/rules/*.md` | hand-edited | Auto-loaded modular rules (style guides, behavioral modes) |
 | `.claude/INTROSPECTION.md` | introspect skill | Learned patterns and preferences |
 | `.claude/scripts/validate.sh` | scaffold skill | Project validation pipeline |
 | `.claude/skills/validate-changes/SKILL.md` | scaffold skill | Thin wrapper around `validate.sh` |
@@ -46,6 +47,10 @@ This split keeps regenerated artifacts out of the same directory as your durable
 | `.context/tasks/<name>.architecture.md` | task-planner | Companion architecture scope for the task |
 | `.context/tasks/<name>.review-tasks.md` | task-review | Consolidated review fixes |
 | `.context/logs/<date>-<name>/` | task-cleanup | Archived task files + git hashes |
+
+### Rules directory
+
+`.claude/rules/` and `~/.claude/rules/` are auto-loaded by Claude Code (v2.0.64+). Every `.md` file in these directories is added to context at session start — no `CLAUDE.md` import needed. Add `paths:` frontmatter to scope a rule to specific file patterns; otherwise it loads globally. Use this for modular style guides, behavioral modes, or domain-specific conventions instead of bloating `CLAUDE.md`.
 
 ---
 

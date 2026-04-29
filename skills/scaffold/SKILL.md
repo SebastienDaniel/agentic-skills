@@ -230,7 +230,7 @@ If `.claude/CLAUDE.md` does not exist, create it with this content.
 
 ### 3d. Scaffold project documentation
 
-If `.claude/docs/INTROSPECTION.md` does not exist in the project, create it:
+If `.claude/INTROSPECTION.md` does not exist in the project, create it:
 
 ```markdown
 # Project Introspection
@@ -249,7 +249,7 @@ If `.claude/CLAUDE.md` exists in the project, check if it already references INT
 ```markdown
 
 # Introspection
-Read and follow all guidelines in `.claude/docs/INTROSPECTION.md` when it exists.
+Read and follow all guidelines in `.claude/INTROSPECTION.md` when it exists.
 ```
 
 ### 3e. Confirm

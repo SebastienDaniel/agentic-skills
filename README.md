@@ -25,12 +25,36 @@ After any session
 
 ---
 
+## Directory layout: `.claude/` vs `.context/`
+
+Per project, the workflow uses two roots with a clear separation:
+
+- **`.claude/`** — tooling configuration that is hand-edited or scaffolded once. Persistent rules, scripts, skills, and learned preferences.
+- **`.context/`** — generated workflow artifacts. Architecture docs, PRDs, task files, review tasks, and archived logs. Treat as machine-managed.
+
+This split keeps regenerated artifacts out of the same directory as your durable configuration.
+
+| Path | Owner | Purpose |
+|---|---|---|
+| `.claude/CLAUDE.md` | hand-edited / scaffolded | Hard rules and guardrails |
+| `.claude/INTROSPECTION.md` | introspect skill | Learned patterns and preferences |
+| `.claude/scripts/validate.sh` | scaffold skill | Project validation pipeline |
+| `.claude/skills/validate-changes/SKILL.md` | scaffold skill | Thin wrapper around `validate.sh` |
+| `.context/docs/ARCHITECTURE.md` | arch-create / arch-update | Machine-readable project map |
+| `.context/tasks/<name>.prd.md` | task-brainstorm | Product requirements doc |
+| `.context/tasks/<name>.tasks.md` | task-planner | Structured task file |
+| `.context/tasks/<name>.architecture.md` | task-planner | Companion architecture scope for the task |
+| `.context/tasks/<name>.review-tasks.md` | task-review | Consolidated review fixes |
+| `.context/logs/<date>-<name>/` | task-cleanup | Archived task files + git hashes |
+
+---
+
 ## Project setup (run once)
 
 ### `/arch-create`
-Analyzes the codebase and generates `.claude/docs/ARCHITECTURE.md` — a machine-readable reference document covering the tech stack, modules, data flow, storage, and API surface. Every planning and execution skill reads this file to avoid re-exploring the codebase from scratch each session.
+Analyzes the codebase and generates `.context/docs/ARCHITECTURE.md` — a machine-readable reference document covering the tech stack, modules, data flow, storage, and API surface. Every planning and execution skill reads this file to avoid re-exploring the codebase from scratch each session.
 
-Run this before anything else. If `ARCHITECTURE.md` is missing, `task-brainstorm`, `task-planner`, and `task-runner` will warn you.
+Run this before anything else. If `ARCHITECTURE.md` is missing, `task-brainstorm`, `task-planner`, and `task-runner` will warn you. If it already exists, `/arch-create` offers to redirect you to `/arch-update` instead of overwriting.
 
 ### `/scaffold`
 Interactively builds a project-specific validation pipeline:
@@ -48,7 +72,7 @@ Run this once per project, before executing tasks. The validator script is what 
 ### `/task-brainstorm`
 An interactive conversation that draws out your thinking about a new feature or change. Reads `ARCHITECTURE.md` first so its questions are specific to your codebase.
 
-Covers: motivation, scope, affected modules, constraints, non-goals, risks, and alternatives. Produces a Product Requirements Document (PRD) saved to `.claude/tasks/<name>.prd.md`.
+Covers: motivation, scope, affected modules, constraints, non-goals, risks, and alternatives. Produces a Product Requirements Document (PRD) saved to `.context/tasks/<name>.prd.md`.
 
 Use this when the idea is vague or early-stage. If the feature is already well-defined, you can write the PRD yourself and skip to `/task-planner`.
 
@@ -60,7 +84,7 @@ Analyzes the codebase deeply, then breaks work into **phases** and **TODO items*
 - Each TODO item is fully self-contained with file path, context, and requirements
 - New or structurally changed modules are flagged as **TDD modules** — the runner will scaffold stubs and failing tests before implementation
 
-Output: `.claude/tasks/<name>.tasks.md` + `.claude/tasks/<name>.architecture.md`
+Output: `.context/tasks/<name>.tasks.md` + `.context/tasks/<name>.architecture.md`
 
 ### `/task-runner [task-file-name]`
 Executes the task file one item at a time. Reads `ARCHITECTURE.md`, `CLAUDE.md`, and `INTROSPECTION.md` before starting.
@@ -72,21 +96,23 @@ Validation calls the `validator` agent, which runs your `.claude/scripts/validat
 When all items are done, offers to run `/task-cleanup`.
 
 ### `/task-review`
-Runs three review agents **in parallel**: architecture consistency, code style, and code correctness. Each writes its findings as fix tasks:
-- `.claude/tasks/architecture-fix-tasks.md`
-- `.claude/tasks/code-style-fix-tasks.md`
-- `.claude/tasks/code-correctness-fix-tasks.md`
+Runs three review agents **in parallel**: architecture consistency, code style, and code correctness. Each writes intermediate findings, which are then consolidated into a single prioritized fix file:
 
-Run after implementing a feature and before opening a PR. Then use `/task-runner <agent>-fix-tasks` to execute the fixes.
+- `.context/tasks/<task-name>.review-tasks.md`
+
+The intermediate per-reviewer files are deleted after consolidation. Items are sorted CRITICAL → MAJOR → MINOR → NITPICK.
+
+Run after implementing a feature and before opening a PR. Then use `/task-runner <task-name>.review-tasks` to execute the fixes.
 
 ### `/task-cleanup [task-file-name]`
 Archives a completed task:
-- Moves `.tasks.md`, `.prd.md`, and `.architecture.md` to `.claude/logs/<date>-<task-name>/`
+- Moves `.tasks.md`, `.prd.md`, and `.architecture.md` to `.context/logs/<date>-<task-name>/`
 - Captures git commit hashes before and after
 - Writes a `metadata.md` log entry
-- Prompts for a commit message and commits all changes
+- Optionally invokes `/arch-update`
+- Prompts for a commit message and a final commit confirmation before staging and committing
 
-Guards against committing directly to protected branches (`master`, `main`, `dev`, `develop`) — offers to create a `task/<name>` branch instead.
+Guards against committing directly to protected branches (`master`, `main`, `dev`, `develop`, `trunk`) — offers to create a `task/<name>` branch instead.
 
 ---
 
@@ -112,23 +138,9 @@ Targets:
 Run at the end of any session where you noticed patterns worth capturing.
 
 ### `/arch-update`
-Updates `ARCHITECTURE.md` after significant architectural changes (new modules, new dependencies, changed data flow, new storage). Uses `git diff` and session context to identify what changed; only edits affected sections.
+Updates `.context/docs/ARCHITECTURE.md` after significant architectural changes (new modules, new dependencies, changed data flow, new storage). Uses `git diff` and session context to identify what changed; only edits affected sections.
 
 Run after completing a feature that changed the project's structure.
-
----
-
-## Key files
-
-| File | Purpose |
-|---|---|
-| `.claude/docs/ARCHITECTURE.md` | Machine-readable project map — read by every skill |
-| `.claude/docs/INTROSPECTION.md` | Learned patterns and preferences from past sessions |
-| `.claude/CLAUDE.md` | Hard coding rules and guardrails |
-| `.claude/scripts/validate.sh` | Project validation pipeline — runs lint, types, tests |
-| `.claude/tasks/<name>.prd.md` | Product requirements doc (brainstorm output) |
-| `.claude/tasks/<name>.tasks.md` | Structured task file (planner output, runner input) |
-| `.claude/logs/<date>-<name>/` | Archived task files with git hashes |
 
 ---
 

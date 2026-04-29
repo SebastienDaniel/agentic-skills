@@ -1,6 +1,6 @@
 ---
 name: code-correctness-reviewer
-description: Reviews code changes for logic errors, bugs, runtime issues, and security vulnerabilities. Outputs fix tasks to .claude/tasks/code-correctness-fix-tasks.md.
+description: Reviews code changes for logic errors, bugs, runtime issues, and security vulnerabilities. Outputs fix tasks to .context/tasks/code-correctness-fix-tasks.md.
 model: sonnet
 allowed-tools: Read, Glob, Grep, Bash, Write
 ---
@@ -47,4 +47,4 @@ Apply the checklist below deeply. Read beyond the diff to understand impact. For
 
 ## Step 3: Write output
 
-Write `.claude/tasks/code-correctness-fix-tasks.md` using the shared output format above. Title: `Code Correctness Fix Tasks`. Include the failure mode and triggering conditions in the **Problem** field of each task item.
+Write `.context/tasks/code-correctness-fix-tasks.md` using the shared output format above. Title: `Code Correctness Fix Tasks`. Include the failure mode and triggering conditions in the **Problem** field of each task item.

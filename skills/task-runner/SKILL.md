@@ -14,8 +14,8 @@ You are a task execution engine. Your job is to work through a structured task f
 
 ## Step 1: Find the task file
 
-- If `$ARGUMENTS` is provided: look for `.claude/tasks/$ARGUMENTS`, then `.claude/tasks/$ARGUMENTS.tasks.md`, then `.claude/tasks/$ARGUMENTS.md`.
-- If no argument: find the first `.md` file in `.claude/tasks/` that contains unchecked items (`- [ ]`). Ignore `.architecture.md` and `.prd.md` files — those are companion documents, not task files. Prefer `.tasks.md` files (the canonical task-planner output).
+- If `$ARGUMENTS` is provided: look for `.context/tasks/$ARGUMENTS`, then `.context/tasks/$ARGUMENTS.tasks.md`, then `.context/tasks/$ARGUMENTS.md`.
+- If no argument: find the first `.md` file in `.context/tasks/` that contains unchecked items (`- [ ]`). Ignore `.architecture.md` and `.prd.md` files — those are companion documents, not task files. Prefer `.tasks.md` files (the canonical task-planner output).
 - If no task file is found, inform the user and stop.
 - If all items are already checked, invoke the `validator` agent for a final validation pass, then stop.
 
@@ -39,9 +39,9 @@ You are a task execution engine. Your job is to work through a structured task f
 ## Step 2: Load context
 
 1. Read the task file fully.
-2. Read `.claude/docs/ARCHITECTURE.md` to understand the project structure.
+2. Read `.context/docs/ARCHITECTURE.md` to understand the project structure.
 3. Check the task file's **Metadata** section for an **Architecture** reference. If a companion `.architecture.md` file is referenced, read it too.
-4. Read `.claude/CLAUDE.md` and `.claude/docs/INTROSPECTION.md` if they exist.
+4. Read `.claude/CLAUDE.md` and `.claude/INTROSPECTION.md` if they exist.
 
 ## Step 3: Ask validation frequency
 Print an overview of the task list: provide a breakdown of the number of phases and how many tasks they include.
@@ -109,7 +109,7 @@ Check whether validation should run now:
 
 ### 4d. Validate
 
-1. Invoke the `validator` agent (subagent_type: use the custom agent at `.claude/agents/validator.md`) with **no arguments** to run the full validation pipeline.
+1. Invoke the `validator` agent (subagent_type: `validator`) with **no arguments** to run the full validation pipeline.
 2. If the validator reports **ALL CLEAR**: proceed to 4e.
 3. If the validator reports **ISSUES FOUND**: fix the issues in the relevant files, then re-run the validator targeting only the **failed steps** (pass their category names as arguments, e.g., "types lint"). Repeat until all clear. If you cannot fix an issue after 2 attempts, report it to the user via `AskUserQuestion` and ask whether to continue or stop. If the user chooses to stop, go to Step 5.
 
@@ -135,7 +135,7 @@ Use `AskUserQuestion` to ask:
 > - **Stop** — stop here
 
 - If the user chooses **Continue**: proceed to 4e.
-- If the user chooses **Introspect**: invoke the `introspect` skill via the Skill tool, then after it completes, re-read `.claude/CLAUDE.md` and `.claude/docs/INTROSPECTION.md` (they may have been updated), and proceed to 4e.
+- If the user chooses **Introspect**: invoke the `introspect` skill via the Skill tool, then after it completes, re-read `.claude/CLAUDE.md` and `.claude/INTROSPECTION.md` (they may have been updated), and proceed to 4e.
 - If the user chooses **Stop**: go to Step 5.
 
 ## Step 5: Report and clean up

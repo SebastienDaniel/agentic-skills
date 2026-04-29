@@ -1,7 +1,7 @@
 # Task File Format
 
 This is the canonical format for task files.
-Task files live in `.claude/tasks/<descriptive-kebab-name>.tasks.md`.
+Task files live in `.context/tasks/<descriptive-kebab-name>.tasks.md`.
 
 ## Task File Template
 
@@ -45,7 +45,7 @@ Task files live in `.claude/tasks/<descriptive-kebab-name>.tasks.md`.
 
 ## Companion Architecture Template
 
-Write to `.claude/tasks/<task-name>.architecture.md` when applicable:
+Write to `.context/tasks/<task-name>.architecture.md` when applicable:
 
 ```markdown
 # Task Architecture: <title>

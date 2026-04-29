@@ -1,6 +1,6 @@
 ---
 name: code-style-reviewer
-description: Reviews code changes for style issues, naming, formatting, and code quality. Outputs fix tasks to .claude/tasks/code-style-fix-tasks.md.
+description: Reviews code changes for style issues, naming, formatting, and code quality. Outputs fix tasks to .context/tasks/code-style-fix-tasks.md.
 model: sonnet
 allowed-tools: Read, Glob, Grep, Bash, Write
 ---
@@ -43,4 +43,4 @@ Apply ALL style guidelines loaded in Step 1, plus the checklist below. For each 
 
 ## Step 3: Write output
 
-Write `.claude/tasks/code-style-fix-tasks.md` using the shared output format above. Title: `Code Style Fix Tasks`. Include the violated rule in the **Problem** field of each task item.
+Write `.context/tasks/code-style-fix-tasks.md` using the shared output format above. Title: `Code Style Fix Tasks`. Include the violated rule in the **Problem** field of each task item.

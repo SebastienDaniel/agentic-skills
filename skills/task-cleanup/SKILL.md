@@ -12,8 +12,8 @@ Archive a completed task by migrating its files to a log directory, recording gi
 
 ## Phase 0: Find the task file
 
-- If `$ARGUMENTS` is provided: look for `.claude/tasks/$ARGUMENTS`, then `.claude/tasks/$ARGUMENTS.tasks.md`, then `.claude/tasks/$ARGUMENTS.md`.
-- Otherwise: find the first `.md` in `.claude/tasks/` that has all items checked (`- [x]`). Ignore `.architecture.md` and `.prd.md` files — those are companion documents, not task files.
+- If `$ARGUMENTS` is provided: look for `.context/tasks/$ARGUMENTS`, then `.context/tasks/$ARGUMENTS.tasks.md`, then `.context/tasks/$ARGUMENTS.md`.
+- Otherwise: find the first `.md` in `.context/tasks/` that has all items checked (`- [x]`). Ignore `.architecture.md` and `.prd.md` files — those are companion documents, not task files.
 - If no task file is found, inform the user and stop.
 - Derive `<task-name>` from the filename: strip `.tasks.md` if present, otherwise strip `.md`.
 - Run `date -u +%Y-%m-%d` and `date -u +%Y-%m-%dT%H:%M:%SZ` to capture the current date and full datetime in UTC.
@@ -51,16 +51,16 @@ If the user chooses to stop, exit.
 
 ## Phase 1: Resolve log directory
 
-Determine the target log directory: `.claude/logs/<log-dir-name>/`.
+Determine the target log directory: `.context/logs/<log-dir-name>/`.
 
 If that directory already exists, use `AskUserQuestion`:
 
 > **Log directory already exists**
-> `.claude/logs/<log-dir-name>/` already exists.
+> `.context/logs/<log-dir-name>/` already exists.
 >
 > Options:
 > - Overwrite — replace existing files
-> - Append suffix — use `.claude/logs/<log-dir-name>-2/` (increment until free)
+> - Append suffix — use `.context/logs/<log-dir-name>-2/` (increment until free)
 > - Abort
 
 If the user chooses to abort, exit. If suffix, find the next available integer suffix.
@@ -69,7 +69,7 @@ If the user chooses to abort, exit. If suffix, find the next available integer s
 
 1. Run `git rev-parse HEAD` to get the current commit hash.
 2. Create the log directory.
-3. Write `.claude/logs/<log-dir-name>/metadata.md`:
+3. Write `.context/logs/<log-dir-name>/metadata.md`:
 
 ```markdown
 # Task Log: <task-name>
@@ -88,10 +88,10 @@ _(pending)_
 
 Strip the `<task-name>` prefix as you move each file into the log directory so the archived files are named by their role, not the task:
 
-- Move the task file → `.claude/logs/<log-dir-name>/tasks.md`
-  - Source is `.claude/tasks/<task-name>.tasks.md` if it exists, otherwise `.claude/tasks/<task-name>.md`.
-- If `.claude/tasks/<task-name>.architecture.md` exists, move it → `.claude/logs/<log-dir-name>/architecture.md`
-- If `.claude/tasks/<task-name>.prd.md` exists, move it → `.claude/logs/<log-dir-name>/prd.md`
+- Move the task file → `.context/logs/<log-dir-name>/tasks.md`
+  - Source is `.context/tasks/<task-name>.tasks.md` if it exists, otherwise `.context/tasks/<task-name>.md`.
+- If `.context/tasks/<task-name>.architecture.md` exists, move it → `.context/logs/<log-dir-name>/architecture.md`
+- If `.context/tasks/<task-name>.prd.md` exists, move it → `.context/logs/<log-dir-name>/prd.md`
 
 Use `mv` via Bash for each.
 
@@ -129,7 +129,20 @@ Use the accepted or user-provided message.
 
 ## Phase 5: Commit and finalize
 
-1. Run `git add -A` to stage all changes.
-2. Create the commit using the confirmed message.
+1. Run `git status --porcelain` and show the user the list of files that will be staged.
+2. Use `AskUserQuestion`:
+
+> **Ready to commit**
+> The files above will be staged with `git add -A` and committed with the message confirmed in Phase 4.
+>
+> Options:
+> - **Commit now** — proceed with `git add -A` and commit
+> - **Stage manually then commit** — pause so the user can stage selectively, then resume
+> - **Abort** — leave the archived files in place but make no commit
+
+- If **Commit now**: run `git add -A`, then create the commit using the confirmed message.
+- If **Stage manually then commit**: instruct the user to stage what they want, then ask via `AskUserQuestion` whether to proceed; on proceed, run `git commit` (no `add -A`) using the confirmed message.
+- If **Abort**: skip steps 3–4 and report that the archive is in place but no commit was made.
+
 3. Run `git rev-parse HEAD` to get the new commit hash.
-4. Update `.claude/logs/<log-dir-name>/metadata.md` — replace `_(pending)_` with the new hash.
+4. Update `.context/logs/<log-dir-name>/metadata.md` — replace `_(pending)_` with the new hash.

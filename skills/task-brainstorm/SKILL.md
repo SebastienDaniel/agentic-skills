@@ -16,9 +16,9 @@ Be thorough in your questions - you want to challenge the user to ensure no assu
 
 Before asking the user anything, read the codebase's existing documentation so your questions are informed and specific — not generic.
 
-1. Read `.claude/docs/ARCHITECTURE.md`. If it doesn't exist, tell the user and suggest running `/arch-create` with a sub-agent first. Offer to continue anyway if they want.
+1. Read `.context/docs/ARCHITECTURE.md`. If it doesn't exist, tell the user and suggest running `/arch-create` first. Offer to continue anyway if they want.
 2. Read any `README.md` files at the project root and in major subdirectories.
-3. Read `.claude/CLAUDE.md` and `.claude/docs/INTROSPECTION.md` if they exist, to understand project conventions.
+3. Read `.claude/CLAUDE.md` and `.claude/INTROSPECTION.md` if they exist, to understand project conventions.
 4. Skim the top-level directory structure (e.g. with `Glob`) to form a mental map of the moving parts.
 
 You do NOT need to read source files in this phase. The goal is a high-level grounding, not deep code analysis.
@@ -97,7 +97,7 @@ If the user requests changes, adjust and present again. If they want to keep bra
 
 ## Phase 5: Write output
 
-Write the approved PRD to `.claude/tasks/<descriptive-kebab-name>.prd.md`. Create the directory if it does not exist.
+Write the approved PRD to `.context/tasks/<descriptive-kebab-name>.prd.md`. Create the directory if it does not exist.
 
 Use this format:
 

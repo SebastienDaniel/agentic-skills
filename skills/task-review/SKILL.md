@@ -23,9 +23,9 @@ Use the Agent tool to launch all three agents **simultaneously in a single messa
 
 | Agent | subagent_type | Output file |
 |---|---|---|
-| architecture-reviewer | `architecture-reviewer` | `.claude/tasks/architecture-fix-tasks.md` |
-| code-style-reviewer | `code-style-reviewer` | `.claude/tasks/code-style-fix-tasks.md` |
-| code-correctness-reviewer | `code-correctness-reviewer` | `.claude/tasks/code-correctness-fix-tasks.md` |
+| architecture-reviewer | `architecture-reviewer` | `.context/tasks/architecture-fix-tasks.md` |
+| code-style-reviewer | `code-style-reviewer` | `.context/tasks/code-style-fix-tasks.md` |
+| code-correctness-reviewer | `code-correctness-reviewer` | `.context/tasks/code-correctness-fix-tasks.md` |
 
 Each agent is self-contained — pass no prompt, they load their own context.
 
@@ -36,7 +36,7 @@ Once all agents complete:
 1. Read each of the three output files.
 2. Collect all `- [ ]` task items across all files. Ignore files that contain `## No Issues Found`.
 3. Sort all items by severity: `CRITICAL` → `MAJOR` → `MINOR` → `NITPICK`. Within the same severity, group by reviewer (architecture, then correctness, then style).
-4. Write `.claude/tasks/<task-name>.review-tasks.md` using this format:
+4. Write `.context/tasks/<task-name>.review-tasks.md` using this format:
 
 ```markdown
 # Review Fix Tasks: <task-name>
@@ -64,9 +64,9 @@ Combined output from 3 parallel review agents:
 
 5. Delete the three individual review files:
    ```
-   rm .claude/tasks/architecture-fix-tasks.md
-   rm .claude/tasks/code-style-fix-tasks.md
-   rm .claude/tasks/code-correctness-fix-tasks.md
+   rm .context/tasks/architecture-fix-tasks.md
+   rm .context/tasks/code-style-fix-tasks.md
+   rm .context/tasks/code-correctness-fix-tasks.md
    ```
 
 ## Step 4: Report
@@ -74,7 +74,7 @@ Combined output from 3 parallel review agents:
 ```
 ## Review Complete
 
-3 agents ran in parallel. Findings consolidated into `.claude/tasks/<task-name>.review-tasks.md`:
+3 agents ran in parallel. Findings consolidated into `.context/tasks/<task-name>.review-tasks.md`:
 
 - Architecture: N issues
 - Correctness: N issues

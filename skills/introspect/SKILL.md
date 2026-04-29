@@ -53,7 +53,18 @@ Adjust based on the user's response.
 
 For each accepted item targeting `INTROSPECTION.md`:
 
-1. Read the target file (create it if it doesn't exist — use the global `~/.claude/docs/INTROSPECTION.md` as a template for new project-level introspection files).
+1. Read the target file. If it doesn't exist, create it with this template:
+   ```markdown
+   # Project Introspection
+
+   Project-specific guidelines and patterns learned from session feedback.
+
+   ## Coding Patterns
+
+   ## Workflow Preferences
+
+   ## Common Pitfalls
+   ```
 2. Determine where in the file the new content belongs (match existing sections).
 3. Draft the edit.
 4. Show the user the proposed change using `AskUserQuestion`:
@@ -67,11 +78,11 @@ For each accepted item targeting `INTROSPECTION.md`:
    > - Modify the wording
    > - Skip
 5. Apply the edit if confirmed. Do not check for duplicate entries — append the note as-is.
-6. **Self-heal CLAUDE.md reference**: If the edit target was a local `.claude/docs/INTROSPECTION.md`, read the project's `.claude/CLAUDE.md`. If it exists but does not contain a reference to `INTROSPECTION.md`, append the standard reference block:
+6. **Self-heal CLAUDE.md reference**: If the edit target was a local `.claude/INTROSPECTION.md`, read the project's `.claude/CLAUDE.md`. If it exists but does not contain a reference to `INTROSPECTION.md`, append the standard reference block:
    ```markdown
 
    # Introspection
-   Read and follow all guidelines in `.claude/docs/INTROSPECTION.md` when it exists.
+   Read and follow all guidelines in `.claude/INTROSPECTION.md` when it exists.
    ```
    This does not require user confirmation — it is a structural link, not a content change.
 
@@ -139,11 +150,11 @@ After all items are processed, output a brief summary:
 
 - **Global** targets:
   - `~/.claude/CLAUDE.md` — global coding guidelines
-  - `~/.claude/docs/INTROSPECTION.md` — global introspection
+  - `~/.claude/INTROSPECTION.md` — global introspection
   - `~/.claude/skills/<name>/SKILL.md` — global skill definitions
 - **Local** targets (project root):
   - `.claude/CLAUDE.md` — project coding guidelines
-  - `.claude/docs/INTROSPECTION.md` — project introspection
+  - `.claude/INTROSPECTION.md` — project introspection
   - `.claude/skills/<name>/SKILL.md` — project skill overrides
 
 ## Rules

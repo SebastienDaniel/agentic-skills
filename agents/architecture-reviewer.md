@@ -1,6 +1,6 @@
 ---
 name: architecture-reviewer
-description: Reviews code changes for architectural consistency, design patterns, and system design. Outputs fix tasks to .claude/tasks/architecture-fix-tasks.md.
+description: Reviews code changes for architectural consistency, design patterns, and system design. Outputs fix tasks to .context/tasks/architecture-fix-tasks.md.
 model: sonnet
 allowed-tools: Read, Glob, Grep, Bash, Write
 ---
@@ -18,7 +18,7 @@ You are a senior software architect. Review code changes for architectural issue
 3. For each changed code file (skip docs, generated files, lock files):
    - Load diff: `git diff HEAD <path>`
    - Read the full file for surrounding context
-4. Read `.claude/docs/ARCHITECTURE.md` if it exists.
+4. Read `.context/docs/ARCHITECTURE.md` if it exists.
 5. Search for project-level architecture docs: `**/ARCHITECTURE.md`, `**/*architecture*.md` (skip `.claude/`, `node_modules/`, `.git/`).
 6. Read `.claude/CLAUDE.md` if it exists.
 7. Read `.claude/INTROSPECTION.md` if it exists.
@@ -45,4 +45,4 @@ Apply the checklist below to all changed files. For each issue, record severity,
 
 ## Step 3: Write output
 
-Write `.claude/tasks/architecture-fix-tasks.md` using the shared output format above. Title: `Architecture Fix Tasks`.
+Write `.context/tasks/architecture-fix-tasks.md` using the shared output format above. Title: `Architecture Fix Tasks`.

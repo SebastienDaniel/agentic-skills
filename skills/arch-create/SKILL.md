@@ -1,15 +1,31 @@
 ---
 name: arch-create
-description: Analyze a project and generate a .claude/docs/ARCHITECTURE.md file documenting its tech stack, structure, data flow, storage, and API surface.
+description: Analyze a project and generate a .context/docs/ARCHITECTURE.md file documenting its tech stack, structure, data flow, storage, and API surface.
 user-invocable: true
 disable-model-invocation: true
 allowed-tools: Read, Grep, Glob, Bash, Write, AskUserQuestion
 model: opus
 ---
 
-Analyze the current project and produce `.claude/docs/ARCHITECTURE.md` — a reference document that enables agentic tools to understand and work with the project without needing to explore the codebase from scratch. Optimize all content for machine consumption: be precise, structured, and information-dense.
+Analyze the current project and produce `.context/docs/ARCHITECTURE.md` — a reference document that enables agentic tools to understand and work with the project without needing to explore the codebase from scratch. Optimize all content for machine consumption: be precise, structured, and information-dense.
 
-## Phase 0: Clarifying questions
+## Phase 0a: Existing-document guard
+
+Check whether `.context/docs/ARCHITECTURE.md` already exists. If it does, use `AskUserQuestion`:
+
+> **`.context/docs/ARCHITECTURE.md` already exists**
+> Re-running `/arch-create` will overwrite it.
+>
+> Options:
+> - **Overwrite** — regenerate from scratch (manual edits will be lost)
+> - **Switch to `/arch-update`** — incrementally update the existing document instead
+> - **Abort** — leave the file untouched
+
+- If **Switch to `/arch-update`**: tell the user to invoke `/arch-update` and stop.
+- If **Abort**: stop without making changes.
+- If **Overwrite**: continue to Phase 0b.
+
+## Phase 0b: Clarifying questions
 
 Before analyzing, ask the following questions using `AskUserQuestion`. Ask all three in a single call.
 
@@ -78,7 +94,7 @@ Identify:
 
 ## Output
 
-Write the file `.claude/docs/ARCHITECTURE.md` using this structure:
+Write the file `.context/docs/ARCHITECTURE.md` using this structure:
 
 ```markdown
 # Architecture

@@ -1,19 +1,19 @@
 ---
 name: arch-update
-description: Update .claude/docs/ARCHITECTURE.md to reflect changes made in the current session. Uses session context and git diff to identify what changed.
+description: Update .context/docs/ARCHITECTURE.md to reflect changes made in the current session. Uses session context and git diff to identify what changed.
 user-invocable: true
 disable-model-invocation: true
 allowed-tools: Read, Grep, Glob, Bash, Edit
 model: opus
 ---
 
-Update the existing `.claude/docs/ARCHITECTURE.md` to reflect significant architectural changes made in the current session.
+Update the existing `.context/docs/ARCHITECTURE.md` to reflect significant architectural changes made in the current session.
 
 Run fully autonomously. Do not ask the user any questions.
 
 ## Step 1: Understand what changed
 
-1. Read the existing `.claude/docs/ARCHITECTURE.md` to understand the current documented state.
+1. Read the existing `.context/docs/ARCHITECTURE.md` to understand the current documented state.
 2. Run `git diff HEAD` to see all uncommitted changes. If there are no uncommitted changes, run `git diff HEAD~1` to see the most recent commit's changes.
 3. From both the session context and the diff, identify changes that are architecturally significant:
    - New modules, directories, or major files added or removed
@@ -41,7 +41,7 @@ After editing, output a brief summary of what was updated and why (2-5 bullet po
 
 ## Rules
 
-- If `.claude/docs/ARCHITECTURE.md` does not exist, inform the user and suggest running `/arch-create` first. Do not create the file.
+- If `.context/docs/ARCHITECTURE.md` does not exist, inform the user and suggest running `/arch-create` first. Do not create the file.
 - Only update sections affected by the changes. Do not rewrite or reorganize unrelated sections.
 - Do not add implementation details. Stay at the same module/layer level as the existing document.
 - If no changes are architecturally significant, say so and make no edits.
